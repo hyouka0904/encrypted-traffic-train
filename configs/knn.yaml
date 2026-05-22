@@ -1,0 +1,12 @@
+model:
+  name: knn
+
+  params:
+    knn:
+      n_neighbors: 5
+
+data:
+  processed_dir: data/processed
+
+output:
+  dir: models       

@@ -1,7 +1,7 @@
 data/
 
 data/processed/
-training/*.onnx
+*.onnx
 training/__pycache__/
 
 __pycache__/
@@ -16,3 +16,5 @@ env/
 
 .DS_Store
 Thumbs.db
+
+*.zip
