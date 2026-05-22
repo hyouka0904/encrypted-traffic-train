@@ -109,12 +109,57 @@ wget https://github.com/hyouka0904/encrypted-traffic-train/releases/download/v1.
 | `v1.0-knn` | KNN  | n_neighbors=5 |
 
 ### 發布 Release
+github CLI, linux:
+```bash
+type -p curl >/dev/null || sudo apt install curl -y
+
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+| sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+
+sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+| sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+
+sudo apt update
+sudo apt install gh -y
+```
+安裝完：
 
 ```bash
-# 需要 GitHub CLI（gh）
-gh release create v1.0-rf \
-  models/rf.onnx \
-  models/features.txt \
-  --title "RF baseline v1.0" \
-  --notes "macro F1=0.862, accuracy=0.890, size=XXX KB"
+gh auth login
 ```
+
+它會問：
+
+```text
+GitHub.com
+HTTPS
+Login with browser
+```
+
+之後：
+
+1. terminal 會給你一個 code
+2. 瀏覽器登入 GitHub
+3. 貼上 code
+4. authorize
+
+完成後測試：
+
+```bash
+gh auth status
+```
+
+```bash
+gh release create v1.X-<model_name> \
+  models/<model_name>.onnx \
+  models/features.txt \
+  --title "<model_name> v1.X" \
+```
+
+## 待辦
+
+- [ ] 新增 SVM、Naive Bayes（sklearn，可直接 ONNX 匯出）
+- [ ] 評估深度學習模型：ResNet、LSTM、Transformer、DLinear，需 PyTorch，另行規劃
+- [ ] train.py 以 isinstance 判斷 DL / sklearn 路徑，ONNX 輸出統一 label 格式，deploy 端不需另外處理
