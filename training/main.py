@@ -41,7 +41,7 @@ def main() -> None:
     model_name = cfg["model"]["name"]
     # config 裡的 params 蓋過 model 檔的 DEFAULT_PARAMS
     model_module = importlib.import_module(f"models.{model_name}")
-    params = {**model_module.DEFAULT_PARAMS, **cfg["model"]["params"].get(model_name, {})}
+    params = {**model_module.DEFAULT_PARAMS, **cfg["model"].get("params", {})}
 
     output_dir = Path(cfg["output"]["dir"])
     onnx_path  = output_dir / f"{model_name}.onnx"
