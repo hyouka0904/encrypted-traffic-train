@@ -2,8 +2,7 @@ model:
   name: rf          
 
   params:
-    rf:
-      n_estimators: 100
+    n_estimators: 100
 
 data:
   processed_dir: data/processed

@@ -2,8 +2,7 @@ model:
   name: knn
 
   params:
-    knn:
-      n_neighbors: 5
+    n_neighbors: 5
 
 data:
   processed_dir: data/processed
