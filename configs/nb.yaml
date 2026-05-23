@@ -1,7 +1,7 @@
 model:
   name: nb
   params:
-    var_smoothing: 1e-9
+    var_smoothing: 1.0e-9
 
 data:
   processed_dir: data/processed
