@@ -1,0 +1,11 @@
+model:
+  name: svm
+  params:
+    C: 1.0
+    max_iter: 2000
+
+data:
+  processed_dir: data/processed
+
+output:
+  dir: models
