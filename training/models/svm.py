@@ -1,4 +1,6 @@
 from sklearn.svm import LinearSVC
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 NAME = "svm"
 DEFAULT_PARAMS = {
@@ -7,4 +9,7 @@ DEFAULT_PARAMS = {
 }
 
 def build(params: dict):
-    return LinearSVC(**params)
+    return Pipeline([
+        ("scaler", StandardScaler()),
+        ("clf", LinearSVC(**params)),
+    ])
