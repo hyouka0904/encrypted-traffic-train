@@ -2,12 +2,22 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+
 from sklearn.metrics import classification_report, f1_score
 from skl2onnx import convert_sklearn
 from skl2onnx.common.data_types import FloatTensorType
+from sklearn.pipeline import Pipeline
+from sklearn.svm import LinearSVC
 
 import os, sys
 
+def _get_onnx_options(model):
+    options = {}
+    steps = model.steps if isinstance(model, Pipeline) else [(None, model)]
+    for _, step in steps:
+        if isinstance(step, LinearSVC):
+            options[LinearSVC] = {"nocl": True}
+    return options
 
 def fit(model: Any, X_train: np.ndarray, y_train: np.ndarray) -> Any:
     print(f"\n[train] {model.__class__.__name__} fitting on {X_train.shape} ...")
@@ -41,7 +51,8 @@ def export_onnx(model, feature_cols, output_path):
     os.dup2(devnull, 1)
     os.dup2(devnull, 2)
     try:
-        onnx_model = convert_sklearn(model, initial_types=initial_type, target_opset=17)
+        options = _get_onnx_options(model)
+        onnx_model = convert_sklearn(model, initial_types=initial_type, target_opset=17, options=options)
     finally:
         sys.stdout.flush()
         sys.stderr.flush()

@@ -4,7 +4,7 @@
     "C": 1.0,
     "max_iter": 2000
   },
-  "accuracy": 0.6085,
-  "macro_f1": 0.4166,
-  "model_size_kb": 1.2
+  "accuracy": 0.6151,
+  "macro_f1": 0.4042,
+  "model_size_kb": 1.5
 }
