@@ -8,7 +8,11 @@
 ```
 rpi_ap_train/
 ├── configs/
-│   └── default.yaml          # 模型選擇與參數設定
+│   ├── default.yaml          # 範本（結構說明用）
+│   ├── rf.yaml
+│   ├── knn.yaml
+│   ├── svm.yaml
+│   └── nb.yaml
 ├── data/
 │   ├── Scenario B-ARFF/      # ISCX-VPN 資料集（不進 git）
 │   └── processed/            # preprocess.py 的輸出（不進 git）
@@ -16,14 +20,15 @@ rpi_ap_train/
 │       ├── test.csv
 │       └── features.txt
 ├── models/                   # main.py 的輸出（不進 git）
-│   ├── rf.onnx
-│   ├── knn.onnx
+│   ├── <model>.onnx
 │   ├── features.txt          # 自動複製，deploy 端需要
 │   └── <model>_results.json  # 準確度 + 模型大小
 ├── training/
 │   ├── models/
-│   │   ├── rf.py             # Random Forest 定義
-│   │   └── knn.py            # K-Nearest Neighbors 定義
+│   │   ├── rf.py             # Random Forest
+│   │   ├── knn.py            # K-Nearest Neighbors
+│   │   ├── svm.py            # LinearSVC（含 StandardScaler Pipeline）
+│   │   └── nb.py             # Gaussian Naive Bayes
 │   ├── preprocess.py
 │   ├── train.py              # fit / evaluate / export
 │   └── main.py               # entry point
@@ -55,27 +60,47 @@ python training/preprocess.py \
 
 ### Step 2 — 訓練與匯出 ONNX
 
-編輯 `configs/default.yaml`，把 `model.name` 設成想要的模型，然後執行：
+每個模型有對應的 yaml，指定 config 執行：
 
 ```bash
-python training/main.py
-# 或指定 config
-python training/main.py --config configs/default.yaml
+python training/main.py --config configs/rf.yaml
+python training/main.py --config configs/knn.yaml
+python training/main.py --config configs/svm.yaml
+python training/main.py --config configs/nb.yaml
 ```
 
 輸出：`models/<model>.onnx`、`models/features.txt`、`models/<model>_results.json`
 
+### Config 格式
+
+每個模型的 yaml 結構如下（參考 `configs/default.yaml`）：
+
+```yaml
+model:
+  name: rf          # 對應 training/models/ 底下的檔名
+  params:           # 蓋過 model 檔的 DEFAULT_PARAMS，可省略
+    n_estimators: 100
+
+data:
+  processed_dir: data/processed
+
+output:
+  dir: models
+```
+
 ## 支援的模型
 
-| 名稱  | 演算法              | ONNX 匯出 |
-|-------|---------------------|-----------|
-| `rf`  | Random Forest       | ✅         |
-| `knn` | K-Nearest Neighbors | ✅         |
+| 名稱  | 演算法                          | ONNX 匯出 | 備註                        |
+|-------|---------------------------------|-----------|-----------------------------|
+| `rf`  | Random Forest                   | ✅         |                             |
+| `knn` | K-Nearest Neighbors             | ✅         |                             |
+| `svm` | LinearSVC + StandardScaler      | ✅         | Pipeline 自動處理特徵縮放   |
+| `nb`  | Gaussian Naive Bayes            | ✅         | baseline 參考用，準確度較低 |
 
 ### 新增模型
 
 1. 在 `training/models/` 新增 `xxx.py`，實作 `NAME`、`DEFAULT_PARAMS`、`build(params)`
-2. 在 `configs/default.yaml` 的 `model.params` 加對應的 key
+2. 新增 `configs/xxx.yaml`
 
 ---
 
@@ -86,7 +111,7 @@ python training/main.py --config configs/default.yaml
 ```bash
 mkdir -p models
 
-# 下載最新版
+# 下載最新版（以 rf 為例）
 wget https://github.com/hyouka0904/encrypted-traffic-train/releases/latest/download/rf.onnx \
   -O models/rf.onnx
 
@@ -101,15 +126,11 @@ wget https://github.com/hyouka0904/encrypted-traffic-train/releases/download/v1.
   -O models/rf.onnx
 ```
 
-### Release 命名規則
 
-| tag        | 模型 | 備註          |
-|------------|------|---------------|
-| `v1.0-rf`  | RF   | baseline      |
-| `v1.0-knn` | KNN  | n_neighbors=5 |
+### 發布 Release（GitHub CLI）
 
-### 發布 Release
-github CLI, linux:
+**安裝（Linux）：**
+
 ```bash
 type -p curl >/dev/null || sudo apt install curl -y
 
@@ -124,42 +145,28 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githu
 sudo apt update
 sudo apt install gh -y
 ```
-安裝完：
+
+**安裝（Windows）：**
+
+下載 `gh_*_windows_amd64.msi` 並執行：https://github.com/cli/cli/releases/latest
+
+**登入：**
 
 ```bash
 gh auth login
+# 選 GitHub.com → HTTPS → Login with a web browser
 ```
 
-它會問：
-
-```text
-GitHub.com
-HTTPS
-Login with browser
-```
-
-之後：
-
-1. terminal 會給你一個 code
-2. 瀏覽器登入 GitHub
-3. 貼上 code
-4. authorize
-
-完成後測試：
-
-```bash
-gh auth status
-```
+**發布：**
 
 ```bash
 gh release create v1.X-<model_name> \
   models/<model_name>.onnx \
   models/features.txt \
-  --title "<model_name> v1.X" \
+  --title "<model_name> v1.X"
 ```
 
 ## 待辦
 
-- [ ] 新增 SVM、Naive Bayes（sklearn，可直接 ONNX 匯出）
 - [ ] 評估深度學習模型：ResNet、LSTM、Transformer、DLinear，需 PyTorch，另行規劃
 - [ ] train.py 以 isinstance 判斷 DL / sklearn 路徑，ONNX 輸出統一 label 格式，deploy 端不需另外處理
