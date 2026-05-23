@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Any
 
 import numpy as np
 
@@ -19,14 +18,14 @@ def _get_onnx_options(model):
             options[LinearSVC] = {"nocl": True}
     return options
 
-def fit(model: Any, X_train: np.ndarray, y_train: np.ndarray) -> Any:
+def fit(model, X_train, y_train):
     print(f"\n[train] {model.__class__.__name__} fitting on {X_train.shape} ...")
     model.fit(X_train, y_train)
     print("[train] done")
     return model
 
 
-def evaluate(model: Any, X_test: np.ndarray, y_test: np.ndarray) -> dict:
+def evaluate(model, X_test, y_test) -> dict:
     y_pred = model.predict(X_test)
     print("\n[evaluate] Classification Report:")
     print(classification_report(y_test, y_pred, digits=3))
@@ -38,7 +37,7 @@ def evaluate(model: Any, X_test: np.ndarray, y_test: np.ndarray) -> dict:
 
 import os, sys
 
-def export_onnx(model, feature_cols, output_path):
+def export_onnx(model, feature_cols, output_path) -> Path:
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 

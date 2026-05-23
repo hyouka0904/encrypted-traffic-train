@@ -1,0 +1,12 @@
+{
+  "model": "lstm",
+  "type": "dl",
+  "params": {
+    "hidden_size": 128,
+    "num_layers": 2,
+    "dropout": 0.3
+  },
+  "accuracy": 0.6567,
+  "macro_f1": 0.4752,
+  "model_size_kb": 829.8
+}
