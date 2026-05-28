@@ -33,11 +33,11 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="configs/default.yaml")
     parser.add_argument(
-    "--device",
-    default="auto",
-    choices=["cpu", "cuda", "auto"],
-    help="training device (default: auto)",
-)
+        "--device",
+        default="auto",
+        choices=["cpu", "cuda", "auto"],
+        help="training device (default: auto)",
+    )
     args = parser.parse_args()
 
     with open(args.config) as f:
@@ -47,10 +47,8 @@ def main() -> None:
     model_module = importlib.import_module(f"models.{model_name}")
     is_dl        = getattr(model_module, "IS_DL", False)
 
-    # 根據路線 import 對應 trainer
-    trainer = importlib.import_module("train_dl" if is_dl else "train_sklearn")
+    import trainer  # 統一 trainer，內部以 isinstance 分流
 
-    # model params：config 蓋過 DEFAULT_PARAMS
     model_params = {**model_module.DEFAULT_PARAMS, **cfg["model"].get("params", {})}
 
     output_dir = Path(cfg["output"]["dir"])
@@ -64,27 +62,24 @@ def main() -> None:
 
     X_train, y_train, X_test, y_test, feature_cols = load_data(cfg["data"]["processed_dir"])
 
+    # ── Build（is_dl 只在這裡用到）──────────────────────────────────────────
     if is_dl:
-        # DL 專屬：LabelEncoder + train_params
         label_encoder = LabelEncoder().fit(y_train)
         n_classes     = len(label_encoder.classes_)
-
-        # train_params：TRAIN_PARAMS 為 DL 訓練超參（epochs/lr/batch），可被 yaml 蓋過
-        train_params = {
+        train_params  = {
             **getattr(model_module, "TRAIN_PARAMS", {}),
             **cfg["model"].get("train_params", {}),
         }
-
-        # DL 的 build 需要 n_features / n_classes
-        model   = model_module.build(model_params, n_features=X_train.shape[1], n_classes=n_classes)
-        model   = trainer.fit(model, X_train, y_train, label_encoder, train_params, device=args.device)
-        metrics = trainer.evaluate(model, X_test, y_test, label_encoder)
-        trainer.export_onnx(model, feature_cols, onnx_path, label_encoder)
+        model = model_module.build(model_params, n_features=X_train.shape[1], n_classes=n_classes)
     else:
-        model   = model_module.build(model_params)
-        model   = trainer.fit(model, X_train, y_train)
-        metrics = trainer.evaluate(model, X_test, y_test)
-        trainer.export_onnx(model, feature_cols, onnx_path)
+        label_encoder = None
+        train_params  = None
+        model         = model_module.build(model_params)
+
+    # ── Train / Evaluate / Export（統一呼叫）────────────────────────────────
+    model   = trainer.fit(model, X_train, y_train, label_encoder, train_params, device=args.device)
+    metrics = trainer.evaluate(model, X_test, y_test, label_encoder)
+    trainer.export_onnx(model, feature_cols, onnx_path, label_encoder)
 
     # features.txt 複製到 output（deploy 端需要）
     feat_src = Path(cfg["data"]["processed_dir"]) / "features.txt"
