@@ -1,0 +1,15 @@
+{
+  "model": "mlp",
+  "type": "dl",
+  "params": {
+    "hidden_dims": [
+      256,
+      128,
+      64
+    ],
+    "dropout": 0.3
+  },
+  "accuracy": 0.463,
+  "macro_f1": 0.4429,
+  "model_size_kb": 196.4
+}

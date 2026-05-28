@@ -1,0 +1,15 @@
+model:
+  name: mlp
+  params:
+    hidden_dims: [256, 128, 64]
+    dropout: 0.3
+  train_params:
+    epochs: 200
+    lr: 0.001
+    batch_size: 256
+
+data:
+  processed_dir: data/processed
+
+output:
+  dir: models
