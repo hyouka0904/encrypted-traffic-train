@@ -1,0 +1,16 @@
+{
+  "model": "lgb",
+  "type": "sklearn",
+  "params": {
+    "n_estimators": 300,
+    "max_depth": 6,
+    "learning_rate": 0.1,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "device": "gpu",
+    "n_jobs": -1
+  },
+  "accuracy": 0.9075,
+  "macro_f1": 0.8803,
+  "model_size_kb": 4378.4
+}
