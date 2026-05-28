@@ -1,0 +1,16 @@
+{
+  "model": "xgb",
+  "type": "sklearn",
+  "params": {
+    "n_estimators": 300,
+    "max_depth": 6,
+    "learning_rate": 0.1,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "tree_method": "hist",
+    "device": "cuda"
+  },
+  "accuracy": 0.912,
+  "macro_f1": 0.8865,
+  "model_size_kb": 3964.9
+}
