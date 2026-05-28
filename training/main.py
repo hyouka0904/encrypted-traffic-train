@@ -47,7 +47,7 @@ def main() -> None:
     model_module = importlib.import_module(f"models.{model_name}")
     is_dl        = getattr(model_module, "IS_DL", False)
 
-    import trainer  # 統一 trainer，內部以 isinstance 分流
+    import trainer
 
     model_params = {**model_module.DEFAULT_PARAMS, **cfg["model"].get("params", {})}
 
@@ -76,10 +76,10 @@ def main() -> None:
         train_params  = None
         model         = model_module.build(model_params)
 
-    # ── Train / Evaluate / Export（統一呼叫）────────────────────────────────
+    # ── Train / Evaluate / Export ────────────────────────────────────────────
     model   = trainer.fit(model, X_train, y_train, label_encoder, train_params, device=args.device)
     metrics = trainer.evaluate(model, X_test, y_test, label_encoder)
-    trainer.export_onnx(model, feature_cols, onnx_path, label_encoder)
+    model_module.export_onnx(model, feature_cols, onnx_path, label_encoder=label_encoder)
 
     # features.txt 複製到 output（deploy 端需要）
     feat_src = Path(cfg["data"]["processed_dir"]) / "features.txt"
