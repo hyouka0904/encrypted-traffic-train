@@ -131,6 +131,7 @@ def _export_onnx_dl(model, feature_cols, output_path, label_encoder):
             "label":       {0: "batch_size"},
         },
         opset_version=17,
+        dynamo=False,
     )
 
     # deploy 端用 index 查表
