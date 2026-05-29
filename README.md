@@ -7,28 +7,41 @@
 
 ```
 rpi_ap_train/
-  configs/
-    default.yaml       rf.yaml    knn.yaml   svm.yaml   nb.yaml
-    mlp.yaml           xgb.yaml   lgb.yaml
-  data/
-    Scenario B-ARFF/   (ISCX-VPN 資料集，不進 git)
-    processed/         (preprocess.py 輸出，不進 git)
-      train.csv  test.csv  features.txt
-  models/              (main.py 輸出，不進 git)
-    <model>.onnx
-    features.txt       (自動複製，deploy 端需要)
-    label_classes.txt  (mlp / xgb / lgb 專用，deploy 端查表用)
-    <model>_results.json
-  training/
-    models/
-      rf.py   knn.py   svm.py   nb.py
-      mlp.py  xgb.py   lgb.py
-    onnx_utils.py      (共用 ONNX export 工具)
-    trainer.py         (fit / evaluate)
-    preprocess.py
-    main.py            (entry point)
-  requirements.txt
-  README.md
+├── configs/
+│   ├── default.yaml          # 範本（結構說明用）
+│   ├── rf.yaml
+│   ├── knn.yaml
+│   ├── svm.yaml
+│   ├── nb.yaml
+│   ├── mlp.yaml
+│   ├── xgb.yaml
+│   └── lgb.yaml
+├── data/
+│   ├── Scenario B-ARFF/      # ISCX-VPN 資料集（不進 git）
+│   └── processed/            # preprocess.py 的輸出（不進 git）
+│       ├── train.csv
+│       ├── test.csv
+│       └── features.txt
+├── models/                   # main.py 的輸出（不進 git）
+│   ├── <model>.onnx
+│   ├── features.txt          # 自動複製，deploy 端需要
+│   ├── label_classes.txt     # mlp / xgb / lgb 專用，deploy 端查表用
+│   └── <model>_results.json  # 準確度 + 模型大小
+├── training/
+│   ├── models/
+│   │   ├── rf.py             # Random Forest
+│   │   ├── knn.py            # K-Nearest Neighbors
+│   │   ├── svm.py            # LinearSVC（含 StandardScaler Pipeline）
+│   │   ├── nb.py             # Gaussian Naive Bayes
+│   │   ├── mlp.py            # MLP（DL）
+│   │   ├── xgb.py            # XGBoost
+│   │   └── lgb.py            # LightGBM
+│   ├── onnx_utils.py         # 共用 ONNX export 工具
+│   ├── trainer.py            # fit / evaluate
+│   ├── preprocess.py
+│   └── main.py               # entry point
+├── requirements.txt
+└── README.md
 ```
 
 ## 資料集
