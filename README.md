@@ -150,6 +150,17 @@ output:
 
 Although CNN1D and MLP were tested as deep learning models, the current dataset is based on tabular flow features rather than raw packet sequences. In this setting, tree-based models perform much better. XGBoost achieved the best macro F1 and accuracy, so it is selected as the current deployment model for Raspberry Pi AP inference.
 
+### XGBoost tuning experiment
+
+The original XGBoost configuration remains the best deployment model.
+
+| Config | Macro F1 | Accuracy | ONNX size | Decision |
+|---|---:|---:|---:|---|
+| `xgb.yaml` | 0.8865 | 0.9120 | 3964.9 KB | Selected |
+| `xgb_n200_d6_lr010` | 0.8814 | 0.9078 | 2828.6 KB | Smaller, but rejected due to F1 drop |
+
+Although `xgb_n200_d6_lr010` reduces ONNX size by about 29%, its macro F1 drops by 0.0051, so the baseline `xgb.yaml` is still selected for deployment.
+
 ### 新增模型
 
 每個模型檔案放在 `training/models/` 下，需實作以下欄位：
