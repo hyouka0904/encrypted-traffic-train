@@ -20,3 +20,4 @@ Thumbs.db
 *.zip
 
 models/*.onnx.data
+.venv/
