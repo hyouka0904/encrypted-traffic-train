@@ -51,8 +51,9 @@ def main() -> None:
 
     model_params = {**model_module.DEFAULT_PARAMS, **cfg["model"].get("params", {})}
 
-    output_dir = Path(cfg["output"]["dir"])
-    onnx_path  = output_dir / f"{model_name}.onnx"
+    output_dir    = Path(cfg["output"]["dir"])
+    artifact_name = cfg["output"].get("name", model_name)
+    onnx_path     = output_dir / f"{artifact_name}.onnx"
 
     print(f"\n{'='*50}")
     print(f"  model  : {model_name}  ({'DL' if is_dl else 'sklearn'})")
@@ -94,7 +95,7 @@ def main() -> None:
         **metrics,
         "model_size_kb": round(onnx_path.stat().st_size / 1024, 1),
     }
-    results_path = output_dir / f"{model_name}_results.json"
+    results_path = output_dir / f"{artifact_name}_results.json"
     results_path.write_text(json.dumps(results, indent=2))
 
     print(f"\n{'='*50}")
