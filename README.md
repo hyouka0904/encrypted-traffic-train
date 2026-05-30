@@ -15,6 +15,7 @@ rpi_ap_train/
 │   ├── nb.yaml
 │   ├── mlp.yaml
 │   ├── cnn1d.yaml
+│   ├── fttransformer.yaml
 │   ├── xgb.yaml
 │   └── lgb.yaml
 ├── data/
@@ -36,6 +37,7 @@ rpi_ap_train/
 │   │   ├── nb.py             # Gaussian Naive Bayes
 │   │   ├── mlp.py            # MLP（DL）
 │   │   ├── cnn1d.py          # 1D CNN（DL）
+│   │   ├── fttransformer.py  # FT-Transformer tabular DL
 │   │   ├── xgb.py            # XGBoost
 │   │   └── lgb.py            # LightGBM
 │   ├── onnx_utils.py         # 共用 ONNX export 工具
@@ -142,6 +144,7 @@ output:
 | `rf` | Random Forest | sklearn | 0.862 | ✅ | Strong baseline |
 | `mlp` | Multi-Layer Perceptron | DL | 0.5938 | ✅ | Best DL baseline, smaller but weaker |
 | `cnn1d` | Lightweight 1D CNN | DL | 0.4260 | ✅ | Paper-inspired experimental model |
+| `fttransformer` | FT-Transformer (tabular) | DL | — | ✅ | Tabular Transformer experiment; no result yet |
 | `knn` | K-Nearest Neighbors | sklearn | — | ✅ | baseline |
 | `svm` | LinearSVC + StandardScaler | sklearn | — | ✅ | Pipeline 自動處理特徵縮放 |
 | `nb` | Gaussian Naive Bayes | sklearn | — | ✅ | baseline 參考用，準確度較低 |
@@ -177,6 +180,16 @@ Scaffold (research only):
 | `configs/mtc_lite.yaml` | Future config (not wired to ARFF `main.py`) |
 
 Target: beat XGBoost macro F1 **0.8865** using packet sequences before any deployment switch.
+
+### FT-Transformer (tabular DL experiment)
+
+`fttransformer` is a paper-inspired **FT-Transformer-style** model for the existing ARFF tabular features (`data/processed/`). Unlike MTC-lite, it does **not** require raw PCAP sequences and runs through the standard `training/main.py` pipeline.
+
+```bash
+python training/main.py --config configs/fttransformer.yaml
+```
+
+No benchmark result is reported yet. XGBoost (`configs/xgb.yaml`, macro F1 **0.8865**) remains the selected deployment model until `fttransformer` beats that baseline on a fair evaluation.
 
 ### 新增模型
 
