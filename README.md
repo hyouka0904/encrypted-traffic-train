@@ -137,49 +137,17 @@ output:
 
 ## 支援的模型
 
-| 名稱 | 演算法 | 類型 | macro F1 | ONNX 匯出 | 備註 |
-|---|---|---|---:|---|---|
-| `xgb` | XGBoost | sklearn | 0.8865 | ✅ | Best current deployment model |
-| `lgb` | LightGBM | sklearn | 0.8807 | ✅ | Close to XGBoost but larger ONNX |
-| `rf` | Random Forest | sklearn | 0.862 | ✅ | Strong baseline |
-| `mlp` | Multi-Layer Perceptron | DL | 0.5938 | ✅ | Best DL baseline, smaller but weaker |
-| `cnn1d` | Lightweight 1D CNN | DL | 0.4260 | ✅ | Paper-inspired experimental model |
-| `fttransformer` | FT-Transformer (tabular) | DL | — | ✅ | Tabular Transformer experiment; no result yet |
-| `knn` | K-Nearest Neighbors | sklearn | — | ✅ | baseline |
-| `svm` | LinearSVC + StandardScaler | sklearn | — | ✅ | Pipeline 自動處理特徵縮放 |
-| `nb` | Gaussian Naive Bayes | sklearn | — | ✅ | baseline 參考用，準確度較低 |
-
-### Experiment conclusion
-
-Although CNN1D and MLP were tested as deep learning models, the current dataset is based on tabular flow features rather than raw packet sequences. In this setting, tree-based models perform much better. XGBoost achieved the best macro F1 and accuracy, so it is selected as the current deployment model for Raspberry Pi AP inference.
-
-### XGBoost tuning experiment
-
-The original XGBoost configuration remains the best deployment model.
-
-| Config | Macro F1 | Accuracy | ONNX size | Decision |
-|---|---:|---:|---:|---|
-| `xgb.yaml` | 0.8865 | 0.9120 | 3964.9 KB | Selected |
-| `xgb_n200_d6_lr010` | 0.8814 | 0.9078 | 2828.6 KB | Smaller, but rejected due to F1 drop |
-
-Although `xgb_n200_d6_lr010` reduces ONNX size by about 29%, its macro F1 drops by 0.0051, so the baseline `xgb.yaml` is still selected for deployment.
-
-### Next research direction: MTC-lite
-
-XGBoost (`configs/xgb.yaml`, macro F1 **0.8865**) remains the **selected deployment model**. No change to that baseline.
-
-MTC-lite is a **future raw-packet sequence experiment**, inspired by paper models such as MTC (Transformer + 1D-CNN). Tabular DL models (MLP, CNN1D) on the 23-feature ARFF dataset did not beat XGBoost because they lack packet-level sequence input. MTC-lite is **not a replacement yet** — there are no reported results.
-
-Scaffold (research only):
-
-| Path | Purpose |
-|------|---------|
-| `docs/mtc_lite_research_plan.md` | Research plan and evaluation criteria |
-| `training/sequence/` | Future PCAP → NPZ preprocessing |
-| `training/models/mtc_lite.py` | PyTorch dual-branch model definition |
-| `configs/mtc_lite.yaml` | Future config (not wired to ARFF `main.py`) |
-
-Target: beat XGBoost macro F1 **0.8865** using packet sequences before any deployment switch.
+| 名稱 | 演算法 | 類型 | ONNX 匯出 | 備註 |
+|---|---|---|---|---|
+| `xgb` | XGBoost | sklearn | ✅ | Best current deployment model |
+| `lgb` | LightGBM | sklearn | ✅ | Close to XGBoost but larger ONNX |
+| `rf` | Random Forest | sklearn  | ✅ | Strong baseline |
+| `mlp` | Multi-Layer Perceptron | DL  | ✅ | Best DL baseline, smaller but weaker |
+| `cnn1d` | Lightweight 1D CNN | DL  | ✅ | Paper-inspired experimental model |
+| `fttransformer` | FT-Transformer (tabular) | DL | ✅ | Tabular Transformer experiment; no result yet |
+| `knn` | K-Nearest Neighbors | sklearn | ✅ | baseline |
+| `svm` | LinearSVC + StandardScaler | sklearn | ✅ | Pipeline 自動處理特徵縮放 |
+| `nb` | Gaussian Naive Bayes | sklearn | ✅ | baseline 參考用，準確度較低 |
 
 ### FT-Transformer (tabular DL experiment)
 
@@ -299,3 +267,20 @@ gh release create v1.X-<model_name> models/<model_name>.onnx models/features.txt
 ## 待辦
 
 - [ ] study paper and implement more models
+
+### Next research direction: MTC-lite
+
+XGBoost (`configs/xgb.yaml`, macro F1 **0.8865**) remains the **selected deployment model**. No change to that baseline.
+
+MTC-lite is a **future raw-packet sequence experiment**, inspired by paper models such as MTC (Transformer + 1D-CNN). Tabular DL models (MLP, CNN1D) on the 23-feature ARFF dataset did not beat XGBoost because they lack packet-level sequence input. MTC-lite is **not a replacement yet** — there are no reported results.
+
+Scaffold (research only):
+
+| Path | Purpose |
+|------|---------|
+| `docs/mtc_lite_research_plan.md` | Research plan and evaluation criteria |
+| `training/sequence/` | Future PCAP → NPZ preprocessing |
+| `training/models/mtc_lite.py` | PyTorch dual-branch model definition |
+| `configs/mtc_lite.yaml` | Future config (not wired to ARFF `main.py`) |
+
+Target: beat XGBoost macro F1 **0.8865** using packet sequences before any deployment switch.
