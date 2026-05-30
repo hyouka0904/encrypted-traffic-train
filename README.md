@@ -135,30 +135,20 @@ output:
 
 ## 支援的模型
 
-| 名稱  | 演算法                     | 類型    | macro F1 | ONNX 匯出 | 備註                        |
-|-------|----------------------------|---------|----------|-----------|-----------------------------|
-| `rf`  | Random Forest              | sklearn | 0.862    | ✅        |                             |
-| `knn` | K-Nearest Neighbors        | sklearn | —        | ✅        |                             |
-| `svm` | LinearSVC + StandardScaler | sklearn | —        | ✅        | Pipeline 自動處理特徵縮放   |
-| `nb`  | Gaussian Naive Bayes       | sklearn | —        | ✅        | baseline 參考用，準確度較低 |
-| `xgb` | XGBoost                    | sklearn | 0.8865   | ✅        | Best current deployment model |
-| `lgb` | LightGBM                   | sklearn | 0.8807   | ✅        | Close to XGBoost but larger ONNX |
-| `mlp` | Multi-Layer Perceptron     | DL      | 0.5938   | ✅        | Best DL baseline, smaller but weaker |
-| `cnn1d` | Lightweight 1D CNN       | DL      | 0.4260   | ✅        | Paper-inspired experimental model |
-| `tabresnet` | Tabular ResNet         | DL      | 0.3613   | ✅        | Experimental, not selected |
+| 名稱 | 演算法 | 類型 | macro F1 | ONNX 匯出 | 備註 |
+|---|---|---|---:|---|---|
+| `xgb` | XGBoost | sklearn | 0.8865 | ✅ | Best current deployment model |
+| `lgb` | LightGBM | sklearn | 0.8807 | ✅ | Close to XGBoost but larger ONNX |
+| `rf` | Random Forest | sklearn | 0.862 | ✅ | Strong baseline |
+| `mlp` | Multi-Layer Perceptron | DL | 0.5938 | ✅ | Best DL baseline, smaller but weaker |
+| `cnn1d` | Lightweight 1D CNN | DL | 0.4260 | ✅ | Paper-inspired experimental model |
+| `knn` | K-Nearest Neighbors | sklearn | — | ✅ | baseline |
+| `svm` | LinearSVC + StandardScaler | sklearn | — | ✅ | Pipeline 自動處理特徵縮放 |
+| `nb` | Gaussian Naive Bayes | sklearn | — | ✅ | baseline 參考用，準確度較低 |
 
-### CNN1D experiment note
+### Experiment conclusion
 
-`cnn1d` is a lightweight 1D-CNN inspired by encrypted traffic classification papers such as DeepPacket.  
-In the first CPU experiment on Scenario B-ARFF, it successfully trained and exported to ONNX.
-
-Result:
-
-- Accuracy: 0.6114
-- Macro F1: 0.4260
-- ONNX size: 272.4 KB
-
-The result is lower than XGBoost / LightGBM / Random Forest baselines, so `cnn1d` is currently treated as an experimental model.
+Although CNN1D and MLP were tested as deep learning models, the current dataset is based on tabular flow features rather than raw packet sequences. In this setting, tree-based models perform much better. XGBoost achieved the best macro F1 and accuracy, so it is selected as the current deployment model for Raspberry Pi AP inference.
 
 ### 新增模型
 
