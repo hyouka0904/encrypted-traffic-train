@@ -26,7 +26,7 @@ rpi_ap_train/
 ├── models/                   # main.py 的輸出（不進 git）
 │   ├── <model>.onnx
 │   ├── features.txt          # 自動複製，deploy 端需要
-│   ├── label_classes.txt     # mlp / xgb / lgb 專用，deploy 端查表用
+│   ├── label_classes.txt     # mlp / cnn1d / xgb / lgb 專用，deploy 端查表用
 │   └── <model>_results.json  # 準確度 + 模型大小
 ├── training/
 │   ├── models/
@@ -258,7 +258,7 @@ rf / knn / svm / nb（不需 label_classes.txt）：
 gh release create v1.X-<model_name> models/<model_name>.onnx models/features.txt --title "<model_name> v1.X"
 ```
 
-mlp / xgb / lgb（需帶 label_classes.txt）：
+mlp / cnn1d / xgb / lgb（需帶 label_classes.txt）：
 
 ```bash
 gh release create v1.X-<model_name> models/<model_name>.onnx models/features.txt models/label_classes.txt --title "<model_name> v1.X"
