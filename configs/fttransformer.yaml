@@ -1,0 +1,18 @@
+model:
+  name: fttransformer
+  params:
+    hidden_dim: 64
+    num_layers: 3
+    num_heads: 4
+    dropout: 0.2
+    ff_dim: 128
+  train_params:
+    epochs: 80
+    lr: 0.001
+    batch_size: 256
+
+data:
+  processed_dir: data/processed
+
+output:
+  dir: models

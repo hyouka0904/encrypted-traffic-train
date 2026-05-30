@@ -1,16 +1,16 @@
 {
-  "model": "lgb",
+  "model": "xgb",
   "type": "sklearn",
   "params": {
-    "n_estimators": 300,
+    "n_estimators": 200,
     "max_depth": 6,
     "learning_rate": 0.1,
     "subsample": 0.8,
     "colsample_bytree": 0.8,
-    "device": "gpu",
-    "n_jobs": -1
+    "tree_method": "hist",
+    "device": "cuda"
   },
   "accuracy": 0.9078,
-  "macro_f1": 0.8807,
-  "model_size_kb": 4378.6
+  "macro_f1": 0.8814,
+  "model_size_kb": 2828.6
 }
