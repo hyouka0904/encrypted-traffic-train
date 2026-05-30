@@ -81,9 +81,35 @@ python training/sequence/build_sequence_dataset.py \
 | `--min-packets` | 1 | Skip flows with fewer packets |
 | `--classes` | BROWSING,CHAT,… | Comma-separated valid labels |
 
+## Train MTC-lite on sequence NPZ
+
+`train_mtc_lite.py` is a **separate** training entry point for MTC-lite. It does not use `training/main.py` or the ARFF tabular pipeline.
+
+Example smoke test (tiny synthetic dataset):
+
+```bash
+python training/sequence/train_mtc_lite.py \
+  --data data/sequence/iscx_vpn_sequence.npz \
+  --artifact-name mtc_lite_smoke \
+  --epochs 5
+```
+
+Outputs:
+
+- `models/<artifact-name>_sequence.pt` — PyTorch `state_dict`
+- `models/<artifact-name>_sequence_results.json` — metrics and smoke-test flag
+
+**Important:**
+
+- Datasets with very few flows are **smoke tests only**; metrics are not meaningful benchmarks.
+- A real comparison requires enough flows across all target classes.
+- **XGBoost macro F1 0.8865** remains the deployment baseline to beat.
+- ONNX export is not implemented yet for sequence models.
+
 ## Related files
 
-- `build_sequence_dataset.py` — PCAP → NPZ builder (first implementation)
+- `build_sequence_dataset.py` — PCAP → NPZ builder
+- `train_mtc_lite.py` — MTC-lite sequence training entry point
 - `../models/mtc_lite.py` — PyTorch model expecting input `[batch, max_packets, num_features]`
 - `../../docs/mtc_lite_research_plan.md` — research plan and evaluation criteria
 - `../../configs/mtc_lite.yaml` — future sequence training config (not wired to ARFF `main.py` yet)
