@@ -141,10 +141,11 @@ output:
 | `knn` | K-Nearest Neighbors        | sklearn | —        | ✅        |                             |
 | `svm` | LinearSVC + StandardScaler | sklearn | —        | ✅        | Pipeline 自動處理特徵縮放   |
 | `nb`  | Gaussian Naive Bayes       | sklearn | —        | ✅        | baseline 參考用，準確度較低 |
-| `xgb` | XGBoost                    | sklearn | 0.887    | ✅        | 需要 xgboost、onnxmltools   |
-| `lgb` | LightGBM                   | sklearn | 0.880    | ✅        | 需要 lightgbm、onnxmltools  |
-| `mlp` | Multi-Layer Perceptron     | DL      | TBD      | ✅        | PyTorch DL baseline         |
-| `cnn1d` | Lightweight 1D CNN       | DL      | 0.426    | ✅        | DeepPacket-inspired experimental model; current result below tree-based models |
+| `xgb` | XGBoost                    | sklearn | 0.8865   | ✅        | Best current deployment model |
+| `lgb` | LightGBM                   | sklearn | 0.8807   | ✅        | Close to XGBoost but larger ONNX |
+| `mlp` | Multi-Layer Perceptron     | DL      | 0.5938   | ✅        | Best DL baseline, smaller but weaker |
+| `cnn1d` | Lightweight 1D CNN       | DL      | 0.4260   | ✅        | Paper-inspired experimental model |
+| `tabresnet` | Tabular ResNet         | DL      | 0.3613   | ✅        | Experimental, not selected |
 
 ### CNN1D experiment note
 
