@@ -1,0 +1,17 @@
+{
+  "model": "cnn1d",
+  "type": "dl",
+  "params": {
+    "channels": [
+      32,
+      64,
+      128
+    ],
+    "kernel_size": 5,
+    "dropout": 0.3,
+    "hidden_dim": 128
+  },
+  "accuracy": 0.6114,
+  "macro_f1": 0.426,
+  "model_size_kb": 272.4
+}

@@ -7,9 +7,10 @@
       128,
       64
     ],
-    "dropout": 0.3
+    "dropout": 0.3,
+    "batch_norm": true
   },
-  "accuracy": 0.463,
-  "macro_f1": 0.4429,
+  "accuracy": 0.6844,
+  "macro_f1": 0.5938,
   "model_size_kb": 196.4
 }
