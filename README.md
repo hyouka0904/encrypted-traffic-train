@@ -14,6 +14,7 @@ rpi_ap_train/
 │   ├── svm.yaml
 │   ├── nb.yaml
 │   ├── mlp.yaml
+│   ├── cnn1d.yaml
 │   ├── xgb.yaml
 │   └── lgb.yaml
 ├── data/
@@ -34,6 +35,7 @@ rpi_ap_train/
 │   │   ├── svm.py            # LinearSVC（含 StandardScaler Pipeline）
 │   │   ├── nb.py             # Gaussian Naive Bayes
 │   │   ├── mlp.py            # MLP（DL）
+│   │   ├── cnn1d.py          # 1D CNN（DL）
 │   │   ├── xgb.py            # XGBoost
 │   │   └── lgb.py            # LightGBM
 │   ├── onnx_utils.py         # 共用 ONNX export 工具
@@ -92,7 +94,7 @@ python training/main.py --config configs/<your_DL_model>.yaml --device cuda
 
 輸出：`models/<model>.onnx`、`models/features.txt`、`models/<model>_results.json`
 
-mlp / xgb / lgb 額外輸出：`models/label_classes.txt`
+mlp / cnn1d / xgb / lgb 額外輸出：`models/label_classes.txt`
 
 ### Config 格式
 
@@ -141,7 +143,21 @@ output:
 | `nb`  | Gaussian Naive Bayes       | sklearn | —        | ✅        | baseline 參考用，準確度較低 |
 | `xgb` | XGBoost                    | sklearn | 0.887    | ✅        | 需要 xgboost、onnxmltools   |
 | `lgb` | LightGBM                   | sklearn | 0.880    | ✅        | 需要 lightgbm、onnxmltools  |
-| `mlp` | MLP                        | DL      | 0.470    | ✅        | 需要 PyTorch                |
+| `mlp` | Multi-Layer Perceptron     | DL      | TBD      | ✅        | PyTorch DL baseline         |
+| `cnn1d` | Lightweight 1D CNN       | DL      | 0.426    | ✅        | DeepPacket-inspired experimental model; current result below tree-based models |
+
+### CNN1D experiment note
+
+`cnn1d` is a lightweight 1D-CNN inspired by encrypted traffic classification papers such as DeepPacket.  
+In the first CPU experiment on Scenario B-ARFF, it successfully trained and exported to ONNX.
+
+Result:
+
+- Accuracy: 0.6114
+- Macro F1: 0.4260
+- ONNX size: 272.4 KB
+
+The result is lower than XGBoost / LightGBM / Random Forest baselines, so `cnn1d` is currently treated as an experimental model.
 
 ### 新增模型
 
@@ -197,7 +213,7 @@ wget https://github.com/hyouka0904/encrypted-traffic-train/releases/latest/downl
 wget https://github.com/hyouka0904/encrypted-traffic-train/releases/latest/download/features.txt -O models/features.txt
 ```
 
-**mlp / xgb / lgb**（需額外下載 label_classes.txt）：
+**mlp / cnn1d / xgb / lgb**（需額外下載 label_classes.txt）：
 
 ```bash
 wget https://github.com/hyouka0904/encrypted-traffic-train/releases/latest/download/xgb.onnx -O models/xgb.onnx
