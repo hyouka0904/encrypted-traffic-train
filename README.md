@@ -161,6 +161,23 @@ The original XGBoost configuration remains the best deployment model.
 
 Although `xgb_n200_d6_lr010` reduces ONNX size by about 29%, its macro F1 drops by 0.0051, so the baseline `xgb.yaml` is still selected for deployment.
 
+### Next research direction: MTC-lite
+
+XGBoost (`configs/xgb.yaml`, macro F1 **0.8865**) remains the **selected deployment model**. No change to that baseline.
+
+MTC-lite is a **future raw-packet sequence experiment**, inspired by paper models such as MTC (Transformer + 1D-CNN). Tabular DL models (MLP, CNN1D) on the 23-feature ARFF dataset did not beat XGBoost because they lack packet-level sequence input. MTC-lite is **not a replacement yet** — there are no reported results.
+
+Scaffold (research only):
+
+| Path | Purpose |
+|------|---------|
+| `docs/mtc_lite_research_plan.md` | Research plan and evaluation criteria |
+| `training/sequence/` | Future PCAP → NPZ preprocessing |
+| `training/models/mtc_lite.py` | PyTorch dual-branch model definition |
+| `configs/mtc_lite.yaml` | Future config (not wired to ARFF `main.py`) |
+
+Target: beat XGBoost macro F1 **0.8865** using packet sequences before any deployment switch.
+
 ### 新增模型
 
 每個模型檔案放在 `training/models/` 下，需實作以下欄位：
